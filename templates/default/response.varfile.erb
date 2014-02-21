@@ -1,0 +1,83 @@
+#
+# response.varfile was baked by Chef for <%= node['fqdn'] %>
+#
+
+# RESPONSE FILE FOR UNATTENDED/QUITE INSTALL OF THE PRODUCT.
+# BY USING THIS FILE YOU AGREE TO BE BOUND BY THE TERMS
+# AND CONDITIONS SPECIFIED IN THE PRODUCT EULA
+ 
+# NOTE:
+# THIS FILE ASSUMES YOU ALREADY HAVE A KEY TO ACTIVATE
+# THE PRODUCT. THE COMPUTER IS REBOOTED BY DEFAULT AFTER THE
+# INSTALL, YOU CAN OVERRIDE THIS BEHAVIOR BY PASSING A
+# COMMAND LINE PARAMETER
+# -Dinstall4j.suppressUnattendedReboot=true
+ 
+#ONLY ENGLISH LANGUAGE IS SUPPORTED
+sys.languageId=en
+ 
+#OPTIONALLY SPECIFY AN IPV4 SERVER ADDRESS OR DOMAIN NAME
+#proxyHost=10.2.45.143
+#proxyHost=<proxy host address>
+ 
+#OPTIONALLY SPECIFY A VALID PROXY PORT
+#proxyPort=808
+#proxyPort=<proxy port number>
+ 
+#FIRST NAME AND LAST NAME AND COMPANY NAME MUST BE AT
+#LEAST 1 CHARACTER
+#firstname=John
+#lastname=Doe
+#company=Rapid7 LLC
+firstname=<%= node['nexpose']['first_name'] %>
+lastname=<%= node['nexpose']['last_name'] %>
+company=<%= node['nexpose']['company_name'] %>
+ 
+#FOR NEXPOSE CONSOLE AND LOCAL ENGINE USE "TYPICAL".
+#FOR ENGINE ONLY INSTALL USE "ENGINE"
+#component=typical or engine
+component=<%= node['nexpose']['component_type'] %>
+ 
+###############################################################
+#IT IS STRONGLY RECOMMENDED NOT TO USE PLAIN TEXT PASSWORDS
+#IN THIS DOCUMENT,A RESPONSE>VARFILE IS STORED IN THE
+#<INSTALL_DIR>/.INSTALL4j FOLDER AFTER A SUCCESSFUL INSTALL
+#OF NEXPOSE. YOU CAN USE THIS TO TAILOR YOUR OWN RESPONSE FILE
+###############################################################
+#GLOBAL ADMINISTRATOR USERNAME AND PASSWORD MUST BE A MINIMUM OF
+#6 CHARACTERS.  The values for password1 and password2 must match.
+#username=jsmith
+#password1=example
+#password2=example
+#
+#NOTE: A response file created by running the installer will contain the
+# options "password1.encoded" and "password2.encoded" and a encoded
+# value for the supplied password.  This is more secure than storing
+# the password in plaintext in the response file, but requires an
+# installation to be completed in order to determine the encoded password
+# value. Response files should be treated as sensitive data even if they
+# contain only encrypted password values.
+ 
+username=<%= node['nexpose']['username'] %>
+password1=<%= node['nexpose']['password'] %>
+password2=<%= node['nexpose']['password'] %>
+ 
+#INSTALL PATH SEPERATOR MUST BE ESCAPED
+#sys.installationDir=C:\\Program Files\\Rapid7\\custom
+#sys.installationDir=<install path>
+ 
+#SET THIS TO TRUE IF A DESKTOP ICON TO START NEXPOSE IS REQUIRED
+#createDesktopLinkAction$Boolean=true or false
+createDesktopLinkAction$Boolean=<%= node['nexpose']['create_desktop_icon'] %>
+ 
+#SET THIS TO TRUE IF THE START MENU SHORTCUTS TO CONTROL NEXPOSE
+#SHOULD BE AVAILABLE TO ALL USERS
+#sys.programGroupAllUsers$Boolean=true or false
+sys.programGroupAllUsers$Boolean=<%= node['nexpose']['shortcuts_for_all_users'] %>
+ 
+#SET THE NAME OF THE START MENU ITEM
+#sys.programGroupName=NeXpose
+sys.programGroupName=<%= node['nexpose']['startmenu_item_name'] %>
+ 
+#DO NOT MODIFY THE FIELDS BELOW
+registrationRequired$Integer=1
