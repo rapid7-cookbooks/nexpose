@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nexpose
-# Recipe:: default
+# Recipe:: linux
 #
 # Copyright (C) 2013-2014, Rapid7, LLC.
 # License:: Apache License, Version 2.0
@@ -18,19 +18,21 @@
 # limitations under the License.
 #
 
+# Install Nexpose Pre-Reqs
+package 'screen'
 
-# Configure template response.varfile
-template File.join(Chef::Config['file_cache_path'], 'response.varfile') do
-  source "response.varfile.erb"
-  mode 0644
+# Get Nexpose Installer
+remote_file File.join(Chef::Config['file_cache_path'], node['nexpose']['installer']['bin']) do
+  source node['nexpose']['installer']['uri']
+  mode 0700
 end
 
-case node['os']
-when 'linux'
-  include_recipe 'nexpose::linux'
-when 'windows'
-  include_recipe 'nexpose::windows'
-else
-  Chef::Application.fatal!("Unsupported operating system: " + node['os'])
+# Install Nexpose
+bash "install-nexpose" do
+  user "root"
+  cwd Chef::Config['file_cache_path']
+  code <<-EOH
+    #{node['nexpose']['installer']['bin'].to_s} #{node['nexpose']['install_args'].join(' ')}
+  EOH
+  not_if { ::Dir.exists?(node['nexpose']['install_path']) }
 end
-

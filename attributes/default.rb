@@ -22,31 +22,38 @@
 #
 
 # Nexpose Installer
-node.default['nexpose']['installer']['bin'] = 'NeXposeSetup-Linux64.bin'
-node.default['nexpose']['installer']['uri'] = "http://download2.rapid7.com/download/NeXpose-v4/#{node['nexpose']['installer']['bin']}"
-
-# Installation options
-node.default['nexpose']['console_mode'] = '-console'
-node.default['nexpose']['install_dir'] = '-dir'
-node.default['nexpose']['quiet_mode'] = '-q'
-node.default['nexpose']['var_file'] = '-varfile'
+default['nexpose']['installer']['linux']['bin'] = 'NeXposeSetup-Linux64.bin'
+default['nexpose']['installer']['windows']['bin'] = 'NeXposeSetup-Windows64.exe'
+default['nexpose']['installer']['bin'] = node['nexpose']['installer'][node['os']]['bin']
+default['nexpose']['installer']['uri'] = "http://download2.rapid7.com/download/NeXpose-v4/#{node['nexpose']['installer']['bin']}"
+default['nexpose']['response_file']
 
 # Install path
-node.default['nexpose']['install_path'] = '/opt/rapid7/nexpose'
+case node['os']
+when 'linux'
+  default['nexpose']['install_path'] = '/opt/rapid7/nexpose'
+when 'windows'
+  default['nexpose']['install_path'] = 'C:\Program Files\Rapid7\nexpose'
+end
+
+
 
 # response.varfile template default values
 # Registration information
-node.default['nexpose']['first_name'] = 'Nexpose'
-node.default['nexpose']['last_name'] = 'Dev'
-node.default['nexpose']['company_name'] = 'Rapid7'
+default['nexpose']['first_name'] = 'Nexpose'
+default['nexpose']['last_name'] = 'Dev'
+default['nexpose']['company_name'] = 'Rapid7'
 # Install type (typical || engine)
-node.default['nexpose']['component_type'] = 'typical'
+default['nexpose']['component_type'] = 'typical'
 # Credentials
-node.default['nexpose']['username'] = 'nxadmin'
-node.default['nexpose']['password'] = 'nxadmin'
+default['nexpose']['username'] = 'nxadmin'
+default['nexpose']['password'] = 'nxadmin'
 # Shortcuts and Start Menu configs
-node.default['nexpose']['create_desktop_icon'] = 'true'
-node.default['nexpose']['shortcuts_for_all_users'] = 'true'
-node.default['nexpose']['startmenu_item_name'] = 'Nexpose'
+default['nexpose']['create_desktop_icon'] = 'true'
+default['nexpose']['shortcuts_for_all_users'] = 'true'
+default['nexpose']['startmenu_item_name'] = 'Nexpose'
 
-
+# Installation options
+default['nexpose']['install_args'] = ['-q',
+                                      '-dir', "#{node['nexpose']['install_path']}",
+                                      '-varfile', "#{File.join(Chef::Config['file_cache_path'], 'response.varfile')}"]
