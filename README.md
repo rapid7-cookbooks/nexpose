@@ -88,6 +88,12 @@ Attributes
     <td>Global Administrator Password</td>
     <td><tt>nxadmin</tt></td>
   </tr>
+  <tr>
+    <td><tt>['nexpose']['install_args']</tt></td>
+    <td>Array</td>
+    <td>Array of arguments passed to the installer.<tt>
+    <td><tt>['-q', '-dir', node['nexpose']['install_path'][node[os]], '-Dinstall4j.suppressUnattendedReboot=' + node['nexpose']['suppress_reboot'].to_s, '-varfile', File.join(Chef::Config['file_cache_path'], 'response.varfile')]</td></tt>
+  </tr>
 </table>
 
 Usage
