@@ -32,7 +32,7 @@ Attributes
     <td><tt>['nexpose']['installer']['windows']['bin']</tt></td>
     <td>String</td>
     <td>File name of the Nexpose installer for Windows.</tt></td>
-    <td><tt>NeXposeSetup-Windows64.bin</tt></td>
+    <td><tt>NeXposeSetup-Windows64.exe</tt></td>
   </tr>
   <tr>
     <td><tt>['nexpose']['installer']'['bin']</tt></td>
