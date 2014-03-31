@@ -5,11 +5,11 @@ This cookbook install a Nexpose console.
 Requirements
 ------------
 
-Platform:
+Platforms:
 
-* Ubuntu, RedHat
+* Debian, Ubuntu, RedHat, Windows
 
-The cookbook currently has only been tested on Ubuntu 12.04.
+The cookbook currently has only been tested on Ubuntu 12.04 and Windows Server 2012
 
 Attributes
 ----------
@@ -23,10 +23,22 @@ Attributes
     <th>Default</th>
   </tr>
   <tr>
+    <td><tt>['nexpose']['installer']['linux']['bin']</tt></td>
+    <td>String</td>
+    <td>File name of the Nexpose installer for Linux.</tt></td>
+    <td><tt>NeXposeSetup-Linux64.bin</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['nexpose']['installer']['windows']['bin']</tt></td>
+    <td>String</td>
+    <td>File name of the Nexpose installer for Windows.</tt></td>
+    <td><tt>NeXposeSetup-Windows64.bin</tt></td>
+  </tr>
+  <tr>
     <td><tt>['nexpose']['installer']'['bin']</tt></td>
     <td>String</td>
-    <td>File name of the Nexpose installer.</td>
-    <td><tt>NeXposeSetup-Linux64.bin</tt></td>
+    <td>File name of the Nexpose installer. This is one is used by both Linux and Windows cookbooks.</td>
+    <td><tt>node['nexpose']['installer'][node['os']]['bin']</tt></td>
   </tr>
   <tr>
     <td><tt>['nexpose']['installer']['uri']</tt></td>
@@ -34,11 +46,17 @@ Attributes
     <td>Remote path to the Nexpose installer.</td>
     <td><tt>http://download2.rapid7.com/download/NeXpose-v4/#{node['nexpose']['installer']['bin']}</tt></td>
   </tr>
-  <tr>V
-    <td><tt>['nexpose']['install_path']</tt></td>
+  <tr>
+    <td><tt>['nexpose']['install_path']['linux']</tt></td>
     <td>String</td>
     <td>Path to install Nexpose.</td>
     <td><tt>/opt/rapid7/nexpose</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['nexpose']['install_path']['windows']</tt></td>
+    <td>String</td>
+    <td>Path to install Nexpose.</td>
+    <td><tt>C:\Program Files\Rapid7\Nexpose</tt></td>
   </tr>
   <tr>
     <td><tt>['nexpose']['first_name']</tt></td>

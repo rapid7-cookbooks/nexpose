@@ -21,7 +21,7 @@
 
 # Configure template response.varfile
 template File.join(Chef::Config['file_cache_path'], 'response.varfile') do
-  source "response.varfile.erb"
+  source 'response.varfile.erb'
   mode 0644
 end
 

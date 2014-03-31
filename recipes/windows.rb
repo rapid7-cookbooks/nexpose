@@ -18,9 +18,12 @@
 # limitations under the License.
 #
 
-log "Running Nexpose Installer with Arguments: #{node['nexpose']['install_args'].join(' ')}"
+log "Running #{node['rapid7']['product']} installer with Arguments: #{node['nexpose']['install_args'].join(' ')}" do
+  level :info
+  subscribes :install, "windows_package #{node['rapid7']['product']}", :immediately
+end
 
-windows_package '5923-0269-2637-1519' do
+windows_package node['rapid7']['product'] do
   source node['nexpose']['installer']['uri']
   installer_type :custom
   options node['nexpose']['install_args'].join(' ')

@@ -21,27 +21,27 @@
 # limitations under the License.
 #
 
+# Trailing space has been added to the package_name due to a bug in the installer.
+# Without this space the installation on Windows is not idempotent as the 
+# DisplayName value will not match. This bug will be resolved in future versions
+# of the Nexpose installer.
+default['rapid7']['product'] = 'Nexpose '
 # Nexpose Installer
 default['nexpose']['installer']['linux']['bin'] = 'NeXposeSetup-Linux64.bin'
 default['nexpose']['installer']['windows']['bin'] = 'NeXposeSetup-Windows64.exe'
+# Set the bin URL based on the detected OS value. Supported values are Linux and Windows.
 default['nexpose']['installer']['bin'] = node['nexpose']['installer'][node['os']]['bin']
 default['nexpose']['installer']['uri'] = "http://download2.rapid7.com/download/NeXpose-v4/#{node['nexpose']['installer']['bin']}"
-default['nexpose']['response_file']
 
-# Install path
-case node['os']
-when 'linux'
-  default['nexpose']['install_path'] = '/opt/rapid7/nexpose'
-when 'windows'
-  default['nexpose']['install_path'] = 'C:\Program Files\Rapid7\nexpose'
-end
 
+default['nexpose']['install_path']['linux'] = ::File.join('opt', 'rapid7', node['rapid7']['product'])
+default['nexpose']['install_path']['windows'] = "\"#{::File.join('C:', 'Program Files', 'Rapid7', node['rapid7']['product'])}\""
 
 
 # response.varfile template default values
 # Registration information
 default['nexpose']['first_name'] = 'Nexpose'
-default['nexpose']['last_name'] = 'Dev'
+default['nexpose']['last_name'] = 'User'
 default['nexpose']['company_name'] = 'Rapid7'
 # Install type (typical || engine)
 default['nexpose']['component_type'] = 'typical'
@@ -49,11 +49,15 @@ default['nexpose']['component_type'] = 'typical'
 default['nexpose']['username'] = 'nxadmin'
 default['nexpose']['password'] = 'nxadmin'
 # Shortcuts and Start Menu configs
-default['nexpose']['create_desktop_icon'] = 'true'
-default['nexpose']['shortcuts_for_all_users'] = 'true'
-default['nexpose']['startmenu_item_name'] = 'Nexpose'
+default['nexpose']['create_desktop_icon'] = true
+default['nexpose']['shortcuts_for_all_users'] = true
+default['nexpose']['startmenu_item_name'] = node['rapid7']['product']
+default['nexpose']['suppress_reboot'] = true
+default['nexpose']['proxy_host'] = false
+default['nexpose']['proxy_port'] = false
 
 # Installation options
 default['nexpose']['install_args'] = ['-q',
-                                      '-dir', "#{node['nexpose']['install_path']}",
-                                      '-varfile', "#{File.join(Chef::Config['file_cache_path'], 'response.varfile')}"]
+                                      '-dir', node['nexpose']['install_path'][node[os]],
+                                      '-Dinstall4j.suppressUnattendedReboot=' + node['nexpose']['suppress_reboot'].to_s,
+                                      '-varfile', File.join(Chef::Config['file_cache_path'], 'response.varfile')]

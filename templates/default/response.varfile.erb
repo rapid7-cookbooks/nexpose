@@ -19,11 +19,17 @@ sys.languageId=en
 #OPTIONALLY SPECIFY AN IPV4 SERVER ADDRESS OR DOMAIN NAME
 #proxyHost=10.2.45.143
 #proxyHost=<proxy host address>
- 
+<% unless node['nexpose']['proxy_host'] == false or node['nexpose']['proxy_port'] == false -%>
+proxyHost=<%= node['nexpose']['proxy_host'] %>
+<% end -%>
+
 #OPTIONALLY SPECIFY A VALID PROXY PORT
 #proxyPort=808
 #proxyPort=<proxy port number>
- 
+<% unless node['nexpose']['proxy_host'] == false or node['nexpose']['proxy_port'] == false -%>
+proxyPort=<%= node['nexpose']['proxy_port'] %>
+<% end -%>
+
 #FIRST NAME AND LAST NAME AND COMPANY NAME MUST BE AT
 #LEAST 1 CHARACTER
 #firstname=John
@@ -68,15 +74,15 @@ password2=<%= node['nexpose']['password'] %>
  
 #SET THIS TO TRUE IF A DESKTOP ICON TO START NEXPOSE IS REQUIRED
 #createDesktopLinkAction$Boolean=true or false
-createDesktopLinkAction$Boolean=<%= node['nexpose']['create_desktop_icon'] %>
+createDesktopLinkAction$Boolean=<%= node['nexpose']['create_desktop_icon'].to_s %>
  
 #SET THIS TO TRUE IF THE START MENU SHORTCUTS TO CONTROL NEXPOSE
 #SHOULD BE AVAILABLE TO ALL USERS
 #sys.programGroupAllUsers$Boolean=true or false
-sys.programGroupAllUsers$Boolean=<%= node['nexpose']['shortcuts_for_all_users'] %>
+sys.programGroupAllUsers$Boolean=<%= node['nexpose']['shortcuts_for_all_users'].to_s %>
  
 #SET THE NAME OF THE START MENU ITEM
-#sys.programGroupName=NeXpose
+#sys.programGroupName=Nexpose
 sys.programGroupName=<%= node['nexpose']['startmenu_item_name'] %>
  
 #DO NOT MODIFY THE FIELDS BELOW

@@ -34,5 +34,5 @@ bash "install-nexpose" do
   code <<-EOH
     #{node['nexpose']['installer']['bin'].to_s} #{node['nexpose']['install_args'].join(' ')}
   EOH
-  not_if { ::Dir.exists?(node['nexpose']['install_path']) }
+  not_if { ::Dir.exists?(node['nexpose']['install_path']['windows']) }
 end
