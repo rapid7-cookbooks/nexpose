@@ -25,6 +25,7 @@ end
 
 windows_package node['rapid7']['product'] do
   source node['nexpose']['installer']['uri']
+  checksum node['nexpose']['installer']['windows']['checksum']
   installer_type :custom
   options node['nexpose']['install_args'].join(' ')
   action :install

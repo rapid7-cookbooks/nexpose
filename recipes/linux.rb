@@ -26,6 +26,7 @@ installer = ::File.join(Chef::Config['file_cache_path'], node['nexpose']['instal
 # Get Nexpose Installer
 remote_file installer do
   source node['nexpose']['installer']['uri']
+  checksum node['nexpose']['installer']['linux']['checksum']
   mode 0700
 end
 
