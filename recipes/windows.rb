@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nexpose
-# Recipe:: default
+# Recipe:: windows
 #
 # Copyright (C) 2013-2014, Rapid7, LLC.
 # License:: Apache License, Version 2.0
@@ -18,19 +18,15 @@
 # limitations under the License.
 #
 
-
-# Configure template response.varfile
-template ::File.join(Chef::Config['file_cache_path'], 'response.varfile') do
-  source 'response.varfile.erb'
-  mode 0644
+log "Running #{node['rapid7']['product']} installer with Arguments: #{node['nexpose']['install_args'].join(' ')}" do
+  level :info
+  subscribes :install, "windows_package #{node['rapid7']['product']}", :immediately
 end
 
-case node['os']
-when 'linux'
-  include_recipe 'nexpose::linux'
-when 'windows'
-  include_recipe 'nexpose::windows'
-else
-  Chef::Application.fatal!("Unsupported operating system: " + node['os'])
+windows_package node['rapid7']['product'] do
+  source node['nexpose']['installer']['uri']
+  checksum node['nexpose']['installer']['windows']['checksum']
+  installer_type :custom
+  options node['nexpose']['install_args'].join(' ')
+  action :install
 end
-
