@@ -34,7 +34,7 @@ default['nexpose']['installer']['bin'] = node['nexpose']['installer'][node['os']
 default['nexpose']['installer']['uri'] = "http://download2.rapid7.com/download/NeXpose-v4/#{node['nexpose']['installer']['bin']}"
 
 
-default['nexpose']['install_path']['linux'] = ::File.join('opt', 'rapid7', node['rapid7']['product'])
+default['nexpose']['install_path']['linux'] = ::File.join('/', 'opt', 'rapid7', node['rapid7']['product'].downcase)
 default['nexpose']['install_path']['windows'] = "\"#{::File.join('C:', 'Program Files', 'Rapid7', node['rapid7']['product'])}\""
 
 
@@ -58,6 +58,6 @@ default['nexpose']['proxy_port'] = false
 
 # Installation options
 default['nexpose']['install_args'] = ['-q',
-                                      '-dir', node['nexpose']['install_path'][node[os]],
+                                      '-dir', node['nexpose']['install_path'][node['os']].to_s,
                                       '-Dinstall4j.suppressUnattendedReboot=' + node['nexpose']['suppress_reboot'].to_s,
-                                      '-varfile', File.join(Chef::Config['file_cache_path'], 'response.varfile')]
+                                      '-varfile', ::File.join(Chef::Config['file_cache_path'], 'response.varfile')]
