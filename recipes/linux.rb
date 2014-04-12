@@ -21,8 +21,10 @@
 # Install Nexpose Pre-Reqs
 package 'screen'
 
+installer = ::File.join(Chef::Config['file_cache_path'], node['nexpose']['installer']['bin'])
+
 # Get Nexpose Installer
-remote_file File.join(Chef::Config['file_cache_path'], node['nexpose']['installer']['bin']) do
+remote_file installer do
   source node['nexpose']['installer']['uri']
   mode 0700
 end
@@ -32,7 +34,26 @@ bash "install-nexpose" do
   user "root"
   cwd Chef::Config['file_cache_path']
   code <<-EOH
-    #{node['nexpose']['installer']['bin'].to_s} #{node['nexpose']['install_args'].join(' ')}
+    #{installer.to_s} #{node['nexpose']['install_args'].join(' ')}
   EOH
   not_if { ::Dir.exists?(node['nexpose']['install_path']['windows']) }
 end
+
+# The init script for nexpose consoles and engines is named differently.
+# This block is not within the service block itself as an init_command as the
+# current version of Chef attempted call update-rc.d only with the provider
+# name.
+case node['nexpose']['component_type']
+when 'typical'
+  nexpose_init = 'nexposeconsole.rc'
+when 'engine'
+  nexpose_init = 'nexposeengine.rc'
+else
+  log "Invalid nexpose compontent_type specified: #{node['nexpose']['component_type']}. Valid component_types are typical and engine"
+end
+
+service nexpose_init do
+  supports [:status, :restart]
+  action :enable
+end
+
