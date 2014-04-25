@@ -37,7 +37,7 @@ bash "install-nexpose" do
   code <<-EOH
     #{installer.to_s} #{node['nexpose']['install_args'].join(' ')}
   EOH
-  not_if { ::Dir.exists?(node['nexpose']['install_path']['windows']) }
+  not_if { ::Dir.exists?(node['nexpose']['install_path']['linux']) }
 end
 
 # The init script for nexpose consoles and engines is named differently.
