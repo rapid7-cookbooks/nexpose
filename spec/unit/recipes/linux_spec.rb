@@ -35,4 +35,10 @@ describe 'nexpose::linux' do
     expect(chef_run).to create_remote_file(installer).with(mode: 0700)
   end
 
+  it 'installs nexpose' do
+    expect(chef_run).to run_execute('install-nexpose').with_user('root')
+    expect(chef_run).to run_execute('install-nexpose').with(cwd: Chef::Config['file_cache_path'])
+    expect(chef_run).to run_execute('install-nexpose').with(command: "#{installer} -q -dir /opt/rapid7/nexpose  -Dinstall4j.suppressUnattendedReboot=true -varfile /var/chef/cache/response.varfile")
+  end
+
 end
