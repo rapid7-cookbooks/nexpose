@@ -22,7 +22,7 @@
 #
 
 # Trailing space has been added to the package_name due to a bug in the installer.
-# Without this space the installation on Windows is not idempotent as the 
+# Without this space the installation on Windows is not idempotent as the
 # DisplayName value will not match. This bug will be resolved in future versions
 # of the Nexpose installer.
 default['rapid7']['product'] = 'Nexpose '
@@ -36,7 +36,7 @@ default['nexpose']['installer']['bin'] = node['nexpose']['installer'][node['os']
 default['nexpose']['installer']['uri'] = "http://download2.rapid7.com/download/NeXpose-v4/#{node['nexpose']['installer']['bin']}"
 
 
-default['nexpose']['install_path']['linux'] = ::File.join('/', 'opt', 'rapid7', node['rapid7']['product'].downcase)
+default['nexpose']['install_path']['linux'] = ::File.join('/', 'opt', 'rapid7', node['rapid7']['product'].downcase.rstrip)
 default['nexpose']['install_path']['windows'] = "\"#{::File.join('C:', 'Program Files', 'Rapid7', node['rapid7']['product'])}\""
 
 

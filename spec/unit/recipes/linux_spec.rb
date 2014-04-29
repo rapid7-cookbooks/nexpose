@@ -37,8 +37,12 @@ describe 'nexpose::linux' do
 
   it 'installs nexpose' do
     expect(chef_run).to run_execute('install-nexpose').with_user('root')
-    expect(chef_run).to run_execute('install-nexpose').with(cwd: Chef::Config['file_cache_path'])
-    expect(chef_run).to run_execute('install-nexpose').with(command: "#{installer} -q -dir /opt/rapid7/nexpose  -Dinstall4j.suppressUnattendedReboot=true -varfile /var/chef/cache/response.varfile")
+    expect(chef_run).to run_execute('install-nexpose').with(command: "#{installer} -q -dir /opt/rapid7/nexpose -Dinstall4j.suppressUnattendedReboot=true -varfile /var/chef/cache/response.varfile")
+  end
+
+  it 'does not install nexpose if it already is installed' do
+    allow(::Dir).to receive(:exists?).with('/opt/rapid7/nexpose').and_return(true)
+    expect(chef_run).to run_execute('install-nexpose').with(not_if: true)
   end
 
 end
