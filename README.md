@@ -59,6 +59,12 @@ Attributes
     <td><tt>C:\Program Files\Rapid7\Nexpose</tt></td>
   </tr>
   <tr>
+    <td><tt>['nexpose']['service_action']</tt></td>
+    <td>Array</td>
+    <td>Default actions to use for the service resource.</td>
+    <td><tt>[:enable, :start]</tt></td>
+  </tr>
+  <tr>
     <td><tt>['nexpose']['first_name']</tt></td>
     <td>String</td>
     <td>First name of registered product/license owner.</td>

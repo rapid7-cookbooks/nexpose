@@ -21,8 +21,6 @@
 #################################################################################
 # TODO: ChefSpec does not implement an api for windows_package as it is defined #
 # through the windows cookbook which is not part of chef core.                  #
-# If at a furture point in time chefspec implements the ability to extend the   #
-# chefspec api from an external cookbook, then we can do the validation in      #
-# memory. For now, we will likely need to implement serverspec tests for this   #
-# specifc test.                                                                 #
+# The windows cookbook has implemetented ChefSpec matchers for the resources it #
+# provides, however I have not had success in implmenting them as of yet.       #
 #################################################################################

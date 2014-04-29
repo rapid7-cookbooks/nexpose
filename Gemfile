@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'berkshelf'
-gem 'chefspec', :git => 'git://github.com/sethvargo/chefspec'
-gem 'knife-spec'
+#gem 'chef-dk', :git => 'https://github.com/opscode/chef-dk.git', :tag => '0.0.1'
+#gem 'chefspec'
+#gem 'test-kitchen'
+#gem 'kitchen-docker-api'

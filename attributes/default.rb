@@ -38,7 +38,7 @@ default['nexpose']['installer']['uri'] = "http://download2.rapid7.com/download/N
 
 default['nexpose']['install_path']['linux'] = ::File.join('/', 'opt', 'rapid7', node['rapid7']['product'].downcase.rstrip)
 default['nexpose']['install_path']['windows'] = "\"#{::File.join('C:', 'Program Files', 'Rapid7', node['rapid7']['product'])}\""
-
+default['nexpose']['service_action'] = [:enable, :start]
 
 # response.varfile template default values
 # Registration information
