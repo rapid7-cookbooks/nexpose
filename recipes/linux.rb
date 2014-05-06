@@ -31,12 +31,10 @@ remote_file installer do
 end
 
 # Install Nexpose
-bash "install-nexpose" do
-  user "root"
+execute 'install-nexpose' do
+  user 'root'
   cwd Chef::Config['file_cache_path']
-  code <<-EOH
-    #{installer.to_s} #{node['nexpose']['install_args'].join(' ')}
-  EOH
+  command "#{installer.to_s} #{node['nexpose']['install_args'].join(' ')}"
   not_if { ::Dir.exists?(node['nexpose']['install_path']['linux']) }
 end
 
