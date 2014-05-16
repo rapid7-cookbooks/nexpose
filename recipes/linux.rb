@@ -31,12 +31,10 @@ remote_file installer do
 end
 
 # Install Nexpose
-bash "install-nexpose" do
-  user "root"
+execute 'install-nexpose' do
+  user 'root'
   cwd Chef::Config['file_cache_path']
-  code <<-EOH
-    #{installer.to_s} #{node['nexpose']['install_args'].join(' ')}
-  EOH
+  command "#{installer.to_s} #{node['nexpose']['install_args'].join(' ')}"
   not_if { ::Dir.exists?(node['nexpose']['install_path']['linux']) }
 end
 
@@ -53,8 +51,11 @@ else
   log "Invalid nexpose compontent_type specified: #{node['nexpose']['component_type']}. Valid component_types are typical and engine"
 end
 
+# There is a bug in the init script shipped with Nexpose in which the
+# status command always returns a zero exit code. This makes it impossible
+# for Chef to correctly determine if a process is actually running.
 service nexpose_init do
-  supports [:status, :restart]
-  action :enable
+  supports :status => false, :restart => true
+  action node['nexpose']['service_action']
 end
 
