@@ -51,8 +51,11 @@ else
   log "Invalid nexpose compontent_type specified: #{node['nexpose']['component_type']}. Valid component_types are typical and engine"
 end
 
+# There is a bug in the init script shipped with Nexpose in which the
+# status command always returns a zero exit code. This makes it impossible
+# for Chef to correctly determine if a process is actually running.
 service nexpose_init do
-  supports [:status, :restart]
-  action :enable
+  supports :status => false, :restart => true
+  action node['nexpose']['service_action']
 end
 

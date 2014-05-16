@@ -84,6 +84,9 @@ sys.programGroupAllUsers$Boolean=<%= node['nexpose']['shortcuts_for_all_users'].
 #SET THE NAME OF THE START MENU ITEM
 #sys.programGroupName=Nexpose
 sys.programGroupName=<%= node['nexpose']['startmenu_item_name'] %>
- 
+
+#Prevent the installer from starting Nexpose and delegate control to Chef.
+initService$Boolean=false
+
 #DO NOT MODIFY THE FIELDS BELOW
 registrationRequired$Integer=1
