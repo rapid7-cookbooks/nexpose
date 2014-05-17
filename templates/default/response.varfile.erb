@@ -38,12 +38,11 @@ proxyPort=<%= node['nexpose']['proxy_port'] %>
 firstname=<%= node['nexpose']['first_name'] %>
 lastname=<%= node['nexpose']['last_name'] %>
 company=<%= node['nexpose']['company_name'] %>
- 
-#FOR NEXPOSE CONSOLE AND LOCAL ENGINE USE "TYPICAL".
-#FOR ENGINE ONLY INSTALL USE "ENGINE"
-#component=typical or engine
-component=<%= node['nexpose']['component_type'] %>
- 
+
+## Installation component type.
+sys.component.engine$Boolean=<%= @engine_bool %>
+sys.component.typical$Boolean=<%= @console_bool %>
+
 ###############################################################
 #IT IS STRONGLY RECOMMENDED NOT TO USE PLAIN TEXT PASSWORDS
 #IN THIS DOCUMENT,A RESPONSE>VARFILE IS STORED IN THE
@@ -74,8 +73,10 @@ password2=<%= node['nexpose']['password'] %>
  
 #SET THIS TO TRUE IF A DESKTOP ICON TO START NEXPOSE IS REQUIRED
 #createDesktopLinkAction$Boolean=true or false
+<% if node['os'] == 'windows' and node['nexpose']['compontent_type'] =~ /^(typical|console)$/ -%>
 createDesktopLinkAction$Boolean=<%= node['nexpose']['create_desktop_icon'].to_s %>
- 
+<% end -%>
+
 #SET THIS TO TRUE IF THE START MENU SHORTCUTS TO CONTROL NEXPOSE
 #SHOULD BE AVAILABLE TO ALL USERS
 #sys.programGroupAllUsers$Boolean=true or false

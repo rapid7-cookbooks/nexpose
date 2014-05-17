@@ -18,10 +18,22 @@
 # limitations under the License.
 #
 
+case node['nexpose']['component_type']
+when 'typical', 'console'
+  engine = false
+  console = true
+when 'engine'
+  engine =true
+  console = false
+else
+  Chef::Application.fatal!("Unsupported installation type: " + node['nexpose']['component'])
+end
 
 # Configure template response.varfile
 template ::File.join(Chef::Config['file_cache_path'], 'response.varfile') do
   source 'response.varfile.erb'
+  variables ({ :engine_bool => engine.to_s,
+               :console_bool => console.to_s })
   mode 0644
 end
 

@@ -29,6 +29,7 @@ describe 'nexpose::default' do
       node.set['nexpose']['company_name'] = 'Parts Unlimited'
       node.set['nexpose']['username'] = 'fbar'
       node.set['nexpose']['password'] = 'password123!'
+      node.set['nexpose']['component_type'] = 'typical'
     end.converge(described_recipe)
   end
 
@@ -48,8 +49,9 @@ describe 'nexpose::default' do
     expect(chef_run).to render_file(varfile).with_content(/^((?!proxyPort=.*))/)
   end
 
-  it 'configures the installer varfile to installl nexpose as a console and not a standalone engine' do
-    expect(chef_run).to render_file(varfile).with_content(/^component=typical$/)
+  it 'configures the installer varfile to install nexpose as a console and not a standalone engine' do
+    expect(chef_run).to render_file(varfile).with_content(/^sys\.component\.engine\$Boolean=false$/)
+    expect(chef_run).to render_file(varfile).with_content(/^sys\.component\.typical\$Boolean=true$/)
     expect(chef_run).to render_file(varfile).with_content(/^((?!component=engine$))/)
   end
 
