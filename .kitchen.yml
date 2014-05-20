@@ -1,0 +1,20 @@
+---
+driver:
+  name: vagrant
+
+driver_config:
+  require_chef_omnibus: true
+  customize:
+    memory: 4096
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: ubuntu-12.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[nexpose::default]
+    attributes:
