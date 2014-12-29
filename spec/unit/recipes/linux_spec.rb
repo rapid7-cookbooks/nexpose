@@ -49,7 +49,7 @@ describe 'broken tests' do
   # Disabled until I have more time to fix this issue.
   it 'does not install nexpose if it already is installed' do
     before { pending }
-    allow(::Dir).to receive(:exists?).with('/opt/rapid7/nexpose').and_return(true)
+    allow(::File).to receive(:exists?).with('/opt/rapid7/nexpose/shared').and_return(true)
     expect(chef_run).to run_execute('install-nexpose').with(not_if: true)
   end
 end
