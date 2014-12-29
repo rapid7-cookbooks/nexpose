@@ -35,7 +35,7 @@ execute 'install-nexpose' do
   user 'root'
   cwd Chef::Config['file_cache_path']
   command "#{installer.to_s} #{node['nexpose']['install_args'].join(' ')}"
-  not_if { ::Dir.exists?(node['nexpose']['install_path']['linux']) }
+  not_if { ::File.exists?(File.join(node['nexpose']['install_path']['linux'], 'shared')) }
 end
 
 # The init script for nexpose consoles and engines is named differently.
