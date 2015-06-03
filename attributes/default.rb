@@ -57,7 +57,7 @@ default['nexpose']['startmenu_item_name'] = node['rapid7']['product']
 default['nexpose']['suppress_reboot'] = true
 default['nexpose']['proxy_host'] = false
 default['nexpose']['proxy_port'] = false
-
+default['nexpose']['repair_install'] = false
 # Installation options
 default['nexpose']['install_args'] = ['-q',
                                       '-dir', node['nexpose']['install_path'][node['os']].to_s,

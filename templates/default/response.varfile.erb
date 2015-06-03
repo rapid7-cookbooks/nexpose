@@ -15,7 +15,11 @@
  
 #ONLY ENGLISH LANGUAGE IS SUPPORTED
 sys.languageId=en
- 
+
+<% if node['nexpose']['repair_install'] -%>
+Repair$Boolean=true
+<% end -%>
+
 #OPTIONALLY SPECIFY AN IPV4 SERVER ADDRESS OR DOMAIN NAME
 #proxyHost=10.2.45.143
 #proxyHost=<proxy host address>
