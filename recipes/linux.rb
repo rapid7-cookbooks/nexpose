@@ -43,7 +43,7 @@ end
 # current version of Chef attempted call update-rc.d only with the provider
 # name.
 case node['nexpose']['component_type']
-when 'typical'
+when 'typical', 'console'
   nexpose_init = 'nexposeconsole.rc'
 when 'engine'
   nexpose_init = 'nexposeengine.rc'
