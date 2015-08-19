@@ -1,15 +1,11 @@
 ---
 driver:
-  name: vagrant
+  name: docker
 
 driver_config:
-  network:
-    - ["forwarded_port", {guest: 80, host: 8080}]
-    - ["forwarded_port", {guest: 3780, host: 3780}]
-    - ["private_network", {ip: "192.168.33.33"}]
-  customize:
-    memory: 2024
-    cpus: 2
+  forward:
+    - 8080:8080
+    - 3780:3780
 
 provisioner:
   name: chef_zero
