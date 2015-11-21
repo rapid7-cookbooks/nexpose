@@ -18,14 +18,14 @@
 # limitations under the License.
 #
 
-log "Running #{node['rapid7']['product']} installer with Arguments: #{node['nexpose']['install_args'].join(' ')}" do
+log "Running Nexpose installer with Arguments: #{node['nexpose']['install_args'].join(' ')}" do
   level :info
-  subscribes :install, "windows_package #{node['rapid7']['product']}", :immediately
+  subscribes :install, "windows_package Nexpose ", :immediately
 end
 
-windows_package node['rapid7']['product'] do
+windows_package 'Nexpose ' do
   source node['nexpose']['installer']['uri']
-  checksum node['nexpose']['installer']['windows']['checksum']
+  checksum node['nexpose']['installer']['checksum']
   installer_type :custom
   options node['nexpose']['install_args'].join(' ')
   action :install

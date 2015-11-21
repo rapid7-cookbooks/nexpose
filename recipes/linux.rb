@@ -25,37 +25,71 @@ installer = ::File.join(Chef::Config['file_cache_path'], node['nexpose']['instal
 
 # Get Nexpose Installer
 remote_file installer do
-  source node['nexpose']['installer']['uri']
-  checksum node['nexpose']['installer']['linux']['checksum']
+  source ::URI.join(node['nexpose']['installer']['uri'], node['nexpose']['installer']['bin']).to_s
+  checksum node['nexpose']['installer']['checksum']
   mode 0700
+  not_if { ::File.exist?(installer) }
 end
 
-# Install Nexpose
-execute 'install-nexpose' do
-  user 'root'
-  cwd Chef::Config['file_cache_path']
-  command "#{installer.to_s} #{node['nexpose']['install_args'].join(' ')}"
-  not_if { ::File.exists?(File.join(node['nexpose']['install_path']['linux'], 'shared')) }
-end
-
-# The init script for nexpose consoles and engines is named differently.
-# This block is not within the service block itself as an init_command as the
-# current version of Chef attempted call update-rc.d only with the provider
-# name.
-case node['nexpose']['component_type']
-when 'typical', 'console'
-  nexpose_init = 'nexposeconsole.rc'
-when 'engine'
-  nexpose_init = 'nexposeengine.rc'
+# Init script for engine is different form console
+case node['nexpose']['engine']
+when true
+  init_script = 'nexposeengine.rc'
 else
-  log "Invalid nexpose compontent_type specified: #{node['nexpose']['component_type']}. Valid component_types are typical and engine"
+  init_script = 'nexposeconsole.rc'
 end
 
 # There is a bug in the init script shipped with Nexpose in which the
 # status command always returns a zero exit code. This makes it impossible
 # for Chef to correctly determine if a process is actually running.
-service nexpose_init do
+service 'nexpose' do
+  service_name init_script
+  start_command "/etc/init.d/#{init_script} start"
+  stop_command "/etc/init.d/#{init_script} stop"
+  restart_command "/etc/init.d/#{init_script} restart"
   supports :status => false, :restart => true
-  action node['nexpose']['service_action']
+  action :nothing
 end
 
+# Install Nexpose
+# In order to set database settings, Nexpose has to go through its initialization
+# phase. Currently, the best way to figure out if Nexpose is complete with the init
+# process is to execute a stop through the startup script. The Nexpose process traps
+# the signal and remains running until the setup process is complete.
+execute 'install-nexpose' do
+  user 'root'
+  cwd Chef::Config['file_cache_path']
+  command "#{installer} #{node['nexpose']['install_args'].join(' ')}"
+  creates File.join(node['nexpose']['installer']['path'], 'shared')
+  notifies :run, 'execute[init]', :immediately
+  notifies :enable, 'service[nexpose]', :immediately
+end
+
+# The Nexpose install takes a few seconds to start up. Sleep for 5 seconds to give
+# it enough time to being the init process.
+execute 'init' do
+  user 'root'
+  command "/etc/init.d/#{init_script} start && sleep 10 && /etc/init.d/#{init_script} stop"
+  action :nothing
+  notifies :start, 'service[nexpose]', :immediately
+end
+
+database_file = ::File.join(node['nexpose']['installer']['path'], 'nsc/nxpgsql/nxpdata/postgresql.conf')
+template database_file do
+  user 'nxpgsql'
+  group 'nxpgsql'
+  mode 0600
+  variables(
+    :shared_buffers => node['nexpose']['postgresql']['shared_buffers'],
+    :max_connections => node['nexpose']['postgresql']['max_connections'],
+    :work_mem => node['nexpose']['postgresql']['work_mem'],
+    :checkpoint_segments => node['nexpose']['postgresql']['checkpoint_segments'],
+    :effective_cache_size => node['nexpose']['postgresql']['effective_cache_size'],
+    :log_min_error_statement => node['nexpose']['postgresql']['log_min_error_statement'],
+    :log_min_duration_statement => node['nexpose']['postgresql']['log_min_duration_statement'],
+    :wal_buffers => node['nexpose']['postgresql']['wal_buffers'],
+    :maintenance_work_mem => node['nexpose']['postgresql']['maintenance_work_mem'],
+  )
+  notifies :restart, 'service[nexpose]', :delayed
+  not_if { node['nexpose']['engine'] }
+end

@@ -18,31 +18,30 @@
 # limitations under the License.
 #
 
-case node['nexpose']['component_type']
-when 'typical', 'console'
-  engine = false
-  console = true
-when 'engine'
-  engine =true
-  console = false
-else
-  Chef::Application.fatal!("Unsupported installation type: " + node['nexpose']['component'])
+group 'nxpgsql' do
+  system true
+  action :create
 end
 
-# Configure template response.varfile
+user 'nxpgsql' do
+  system true
+  group 'nxpgsql'
+  action :create
+end
+
+# Configure template response.varfile with secrets
 template ::File.join(Chef::Config['file_cache_path'], 'response.varfile') do
+  user 'root'
+  group 'root'
   source 'response.varfile.erb'
-  variables ({ :engine_bool => engine.to_s,
-               :console_bool => console.to_s })
-  mode 0644
+  mode 0600
 end
 
-case node['os']
-when 'linux'
-  include_recipe 'nexpose::linux'
+case node['platform_family']
 when 'windows'
   include_recipe 'nexpose::windows'
+when 'ubuntu', 'rhel', 'debian'
+  include_recipe 'nexpose::linux'
 else
-  Chef::Application.fatal!("Unsupported operating system: " + node['os'])
+  fail "Unsupported operating system: #{node['platform']}"
 end
-
