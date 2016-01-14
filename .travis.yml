@@ -25,4 +25,4 @@ before_install:
   -in ./test/travis.enc -out ./ssh_private_key -d
 script:
 - bundle exec foodcritic .
-- bundle exec kitchen test
+- bundle exec kitchen test all
