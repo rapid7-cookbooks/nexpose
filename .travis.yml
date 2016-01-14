@@ -23,4 +23,4 @@ before_install:
   -in ./test/travis.enc -out ./ssh_private_key -d
 script:
 - bundle exec foodcritic .
-- bundle exec kitchen test
+- KITCHEN_LOCAL_YAML=.kitchen.travis.yml bundle exec kitchen test
