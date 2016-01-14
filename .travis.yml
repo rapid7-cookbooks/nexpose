@@ -5,6 +5,7 @@ addons:
   apt:
     packages:
     - libgecode-dev
+    - coreutils
 rvm:
   - '2.2'
 env:
@@ -21,6 +22,9 @@ bundler_args: "--binstubs=$PWD/bin --jobs 3 --retry 3"
 before_install:
 - openssl aes-256-cbc -K $encrypted_acf1ff98880d_key -iv $encrypted_acf1ff98880d_iv
   -in ./test/travis.enc -out ./ssh_private_key -d
+- chmod 0600 ./ssh_private_key
 script:
 - bundle exec foodcritic .
 - bundle exec kitchen test -d always
+after_script:
+- shred -n ./ssh_private_key
