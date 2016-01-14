@@ -31,11 +31,6 @@ platforms:
   - name: ubuntu-14.04
     driver:
       image_id: ami-5189a661
-  - name: windows-2008r2
-    <<: *WINDOWS_CONFIG
-    driver:
-      <<: *win_driver_config
-      image_id: ami-c5a7bea4
   - name: windows-2012r2
     <<: *WINDOWS_CONFIG
     driver:
