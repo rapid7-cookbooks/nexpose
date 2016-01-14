@@ -31,6 +31,11 @@ platforms:
   - name: ubuntu-14.04
     driver:
       image_id: ami-5189a661
+  - name: centos-7
+    driver:
+      image_id: ami-d440a6e7
+    transport:
+      username: centos
   - name: windows-2012r2
     <<: *WINDOWS_CONFIG
     driver:
