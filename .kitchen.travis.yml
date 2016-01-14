@@ -16,12 +16,12 @@ transport:
 
 windows_config: &WINDOWS_CONFIG
   driver: &win_driver_config
-    retryable_tries: 200
+    retryable_tries: 60
     retryable_sleep: 10
   transport:
     name: winrm
     username: Administrator
-    connection_retries: 200
+    connection_retries: 20
     connection_retry_sleep: 5
 
 platforms:
