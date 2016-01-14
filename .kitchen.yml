@@ -27,4 +27,4 @@ suites:
       - recipe[nexpose::default]
     attributes:
       nexpose:
-        component_type: engine
+        engine: true
