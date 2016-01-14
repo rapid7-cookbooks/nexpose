@@ -1,12 +1,13 @@
 ---
 driver:
+  name: ec2
+  region: us-west-2
   availability_zone: b
   associate_public_ip: true
   subnet_id: subnet-787e531d
   instance_type: t2.small
   tags:
     Name: travisci_nexpose-cookbook
-
 
 transport:
   name: rsync
