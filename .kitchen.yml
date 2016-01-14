@@ -1,14 +1,15 @@
 ---
 driver:
-  name: docker
-
-driver_config:
-  forward:
-    - 8080:8080
-    - 3780:3780
+  name: vagrant
+  customize:
+    memory: 4096
+    cpus: 2
 
 provisioner:
-  name: chef_zero
+  name: chef_solo
+
+verifier:
+  name: inspec
 
 platforms:
   - name: ubuntu-12.04
@@ -26,4 +27,4 @@ suites:
       - recipe[nexpose::default]
     attributes:
       nexpose:
-        component_type: engine
+        engine: true
