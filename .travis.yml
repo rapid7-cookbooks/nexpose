@@ -29,6 +29,6 @@ before_install:
 - chmod 0600 ./ssh_private_key
 script:
 - bundle exec foodcritic .
-- bundle exec kitchen test $KITCHEN_REGEXP -d always
+- travis_retry bundle exec kitchen test $KITCHEN_REGEXP -d always
 after_script:
 - shred -n ./ssh_private_key
