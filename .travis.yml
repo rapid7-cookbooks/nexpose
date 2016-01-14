@@ -15,6 +15,9 @@ env:
   - secure: gS9PjoQxQiebere2BrDkpBK2wWge7FBgFxiRQveKyzu87fKSa2IKuwjhl/55pitcvis1lOTUdVE+UzGOnUxRabge6J8D5HVsxh8z2MXC1OuvR2cizWjKrC8tuzuI6sKvJFcX+R057ZqDov+Yb0A8hc9Z+7glqR3i36WtdowLSQ8=
   - secure: OxWg97lVjqXZow1gZvM48FEtxTVcs+2kTsXAdbP/UzbIqdYyi/cmtBd9hDqqLYADn9fxvdjew8A//nVlWQcKzFpS0/Ijv7VyBCO0ji9d7kbx/AdoHozG6nTzH74W9uMhCt1pQ2deakw2ObQRivu+F4bN0WO/p0nm7JveDsEobIo=
   - secure: CCTyRogtGOKJ8pjLc6dfAkW+CwZOl3aDeXeuilX5FgQmjzY5SUpK17sGgdz10rERP6Nko5x2iH5OFXW7M376Rkc4ncWAWANy5/aa+VIvJJNjt+9Jib0gGRJV+nbPvCa2/u6KuCQ3cgdxQCdzuh9S+JpfVc5ZBU1bYpvXDCgT8Lw=
+  matrix:
+    - KITCHEN_REGEXP=ubuntu
+    - KITCHEN_REGEXP=windows
 notifications:
   flowdock:
     secure: ech7mNmxi7LB3jSouIRGH+ussEBeN4XR6xGDdo/Elg8g+Gi6wsWwhMw7TcXa9Wi/KVVRbXH9MpQuj3pbzYpbmAmW7unGSgFl37C+TtoIR3WCk+ppm7diuGBaFoxrr4fIzIDUqbaTVf4c5kKmo8WG8DAiek+lIldvGmUyR2Ihceg=
@@ -25,6 +28,6 @@ before_install:
 - chmod 0600 ./ssh_private_key
 script:
 - bundle exec foodcritic .
-- bundle exec kitchen test -d always
+- bundle exec kitchen testi $KITCHEN_REGEXP -d always
 after_script:
 - shred -n ./ssh_private_key
