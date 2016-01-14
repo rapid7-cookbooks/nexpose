@@ -1,0 +1,42 @@
+---
+driver:
+  availability_zone: b
+  associate_public_ip: true
+  subnet_id: subnet-787e531d
+  instance_type: t2.small
+  tags:
+    Name: travisci_nexpose-cookbook
+
+
+transport:
+  name: rsync
+  username: ubuntu
+  ssh_key: ./ssh_private_key
+
+windows_config: &WINDOWS_CONFIG
+  driver: &win_driver_config
+    retryable_tries: 200
+    retryable_sleep: 10
+  transport:
+    name: winrm
+    username: Administrator
+    connection_retries: 200
+    connection_retry_sleep: 5
+
+platforms:
+  - name: ubuntu-12.04
+    driver:
+      image_id: ami-4c514f2d
+  - name: ubuntu-14.04
+    driver:
+      image_id: ami-5189a661
+  - name: windows-2008r2
+    <<: *WINDOWS_CONFIG
+    driver:
+      <<: *win_driver_config
+      image_id: ami-c5a7bea4
+  - name: windows-2012r2
+    <<: *WINDOWS_CONFIG
+    driver:
+      <<: *win_driver_config
+      image_id: ami-83a5bce2

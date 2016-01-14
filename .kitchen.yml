@@ -12,9 +12,18 @@ provisioner:
 
 platforms:
   - name: ubuntu-12.04
+  - name: ubuntu-14.04
+  - name: centos-7
 
 suites:
-  - name: default
+  - name: console
     run_list:
       - recipe[nexpose::default]
     attributes:
+
+  - name: engine
+    run_list:
+      - recipe[nexpose::default]
+    attributes:
+      nexpose:
+        component_type: engine
