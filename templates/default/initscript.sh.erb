@@ -1,0 +1,224 @@
+#!/bin/bash
+
+# chkconfig: 345 95 5
+# description: Starts the Nexpose security console daemon
+
+# This is the startup script for the Rapid7 Nexpose Security Console
+
+# To start Nexpose at boot, use the command appropriate for your system
+# RedHat, Fedora Core, SuSe, Mandrake/Mandiva
+# chkconfig --add nexposeconole
+# Debian/Ubuntu
+### BEGIN INIT INFO
+# Provides:          nexposeconsole.rc
+# Required-Start:    $local_fs $network $syslog
+# Required-Stop:     $local_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starts the Nexpose security console service.
+# Description: Starts the Nexpose security console service.
+### END INIT INFO
+# Gentoo
+# rc-update add nexposeconsole default
+
+# source function library
+if [ -r /etc/rc.d/init.d/functions ]; then
+. /etc/rc.d/init.d/functions
+elif [ -r /etc/rc.d/functions ]; then
+. /etc/rc.d/functions
+elif [ -r /etc/rc.status ]; then
+. /etc/rc.status
+elif [ -r /etc/init.d/functions.sh ]; then
+. /etc/init.d/functions.sh
+fi
+
+# Get a reference to the root directory
+SOURCE="$0"
+while [ -h "$SOURCE" ]; do
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  test ${SOURCE#/} = ${SOURCE} && SOURCE="$DIR/$SOURCE"
+done
+NXP_ROOT="$( cd -P "$( dirname "$SOURCE" )/.." && pwd )"
+
+# defines
+NXP_PID=$NXP_ROOT/<%= @type_path %>/nexpose.pid
+RETVAL=0
+NEX_TYPE=<%= @type %>
+
+
+function getnextparm() {
+  key=$1
+  shift
+  while [ $# -gt 0 ]; do
+    if [ $1 == $key ]; then
+      shift
+      echo $1
+      return 0
+    fi
+    shift
+  done
+}
+
+function getxdisplay() {
+  while [ $# -gt 0 ]; do
+    case $1 in
+      :*) echo $1
+        return 0
+      ;;
+    esac
+    shift
+  done
+}
+
+my_success() {
+  local msg
+  if [ $# -gt 1 ]; then
+    msg="$2"
+  else
+    msg="done"
+  fi
+  case "`type -type success`" in
+    function)
+      success "$1"
+      ;;
+    *)
+      echo -n "${msg}"
+      ;;
+  esac
+}
+
+my_failure() {
+  local msg
+  if [ $# -gt 1 ]; then
+    msg="$2"
+  else
+    msg="FAILED"
+  fi
+  case "`type -type failure`" in
+    function)
+      failure "$1"
+      ;;
+    *)
+      echo -n "${msg}"
+      ;;
+  esac
+}
+
+
+case "$1" in 
+start)
+# Reports require usage of X11/Xorg or Xvfb
+# check for xlock, grab it for reports
+if [ -a /tmp/X?-lock ];
+then
+  XLOCK=$(cd /tmp; ls .X?-lock | fgrep -v .X0- | head -1 )
+  XPID=$(sed 's/ //g' < /tmp/$XLOCK)
+  XPARMS=$(cat /proc/$XPID/cmdline | tr '\000' '\040')
+  XDISPL=$(getxdisplay $XPARMS)
+  XAUTH=$(getnextparm -auth $XPARMS)
+  #echo $(date) XPID=$XPID XDISPL=$XDISPL XAUTH=$XAUTH >> $NXP_ROOT/<%= @type_path %>/.nexposeconsole.log
+  if [ -n "$XLOCK" -a -z "$XDISPL" ]; then
+  XDISPL=":0"
+  fi
+fi
+# If no xserver, try xvfb
+if [ -z "$XDISPL" ]; then
+  ps aux|fgrep -s Xvfb | fgrep -q :5 || ( cd $NXP_ROOT; nohup /usr/X11R6/bin/Xvfb :5 -nolisten tcp & )
+  sleep 10
+  ps aux|fgrep -s Xvfb | fgrep -q :5 && XDISPL=":5"
+fi
+
+#Test for existance of Xserver and set DISPLAY appropriately
+if [ -z "$DISPLAY" -a -n "$XDISPL" ]; then
+  export DISPLAY=$XDISPL
+  test -n $XAUTH && export XAUTHORITY=$XAUTH
+fi
+;;
+esac
+
+
+# Process script arguements
+
+case "$1" in
+        start)
+                echo -n "Starting Nexpose security $NEX_TYPE: "
+                #remove pid file if process does not exist, or is not nexpose
+                if [ -f $NXP_PID ]; then
+                        ps -p `cat $NXP_PID` | fgrep -q nexserv || rm -f $NXP_PID
+                fi
+
+                #Test for existance of Xserver and set DISPLAY appropriately
+                if [ -z "$DISPLAY" -a -n "$XDISPL" ]; then
+                        export DISPLAY=$XDISPL
+                        test -n $XAUTH && export XAUTHORITY=$XAUTH
+                        #echo $(date) Reconfig DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY >> $NXP_ROOT/<%= @type_path %>/.nexposeconsole.log               
+    fi
+                if [ ! -f $NXP_PID ] ; then
+                        cd $NXP_ROOT/<%= @type_path %>
+                        if [ -a /usr/bin/screen ]; then
+                           screen -d -m -S nexpose$NEX_TYPE $NXP_ROOT/<%= @type_path %>/<%= @type_path %>.sh
+                        else
+                           $NXP_ROOT/<%= @type_path %>/<%= @type_path %>.sh >/dev/null 2>&1 </dev/null &
+                        fi
+                        RETVAL=$?
+                        if [ "$RETVAL" = "0" ] ; then
+                                my_success "Nexpose security $NEX_TYPE startup" "nexpose$NEX_TYPE"
+                        else
+                                my_failure "Nexpose security $NEX_TYPE startup" $RETVAL
+                        fi
+                else
+                        my_failure "Nexpose security $NEX_TYPE startup" "already running"
+                fi
+                echo
+    ;;
+        stop)
+                echo -n "Shutting down Nexpose security $NEX_TYPE: "
+                if [ -f $NXP_PID ] ; then
+                        PID=`cat $NXP_PID`
+                        kill -2 $PID
+                        RETVAL=$?
+                        until [ `ps -p $PID | grep -c $PID` = '0' ]
+                        do
+                           echo "Waiting for Nexpose $NEX_TYPE to exit"
+                           sleep 1
+                        done
+                        if [ "$RETVAL" = "0" ] ; then
+                                my_success "Nexpose security $NEX_TYPE shutdown" "nexpose$NEX_TYPE"
+                        else
+                                my_failure "Nexpose security $NEX_TYPE shutdown" $RETVAL
+                        fi
+                        rm $NXP_PID
+                else
+                        my_failure "Nexpose security $NEX_TYPE shutdown" "not running"
+                fi
+                echo
+                ;;
+        restart)
+                $0 stop
+                $0 start
+                RETVAL=$?
+                ;;
+        status)
+                #status
+                if [ -f $NXP_PID ] ; then
+                        ps $(cat $NXP_PID) >/dev/null
+                        RETVAL=$?
+                else
+                        RETVAL=1
+                fi
+
+                if [ $RETVAL -eq 0 ] ; then
+                        echo Nexpose security $NEX_TYPE is running.
+                else
+                        echo Nexpose security $NEX_TYPE is not running.
+                        test -f $NXP_PID && rm $NXP_PID
+                fi
+                ;;
+        *)
+                echo "Usage: nexpose$NEX_TYPE {start|stop|restart|status}"
+                exit 1
+                ;;
+esac
+
+exit $RETVAL

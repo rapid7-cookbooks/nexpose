@@ -23,34 +23,98 @@ require_relative '../../spec_helper'
 
 describe 'nexpose::linux' do
 
-  let(:chef_run) do 
-    ChefSpec::Runner.new do |node|
-      #node.set['nexpose']['installer']['linux']['bin'] = 'fakefile'
-    end.converge(described_recipe)
+  context 'consoles or engines' do
+    let(:chef_run) do 
+      ChefSpec::SoloRunner.new do |node|
+        node.set['nexpose']['installer']['linux']['bin'] = 'fakefile'
+      end.converge(described_recipe)
+    end
+
+    it 'downloads the nexpose linux installer with mode 0700' do
+      expect(chef_run).to create_remote_file(
+        ::File.join(Chef::Config['file_cache_path'],
+                    chef_run.node['nexpose']['installer']['bin'])
+      ).with(mode: 0700)
+    end
+
+    it 'installs nexpose' do
+      expect(chef_run).to run_execute('install-nexpose').with_user('root')
+      expect(chef_run).to run_execute('install-nexpose').with(
+        command: "#{File.join(Chef::Config['file_cache_path'],
+                    chef_run.node['nexpose']['installer']['bin'])} -q -dir /opt/rapid7/nexpose -Dinstall4j.suppressUnattendedReboot=true -varfile #{Chef::Config['file_cache_path']}/response.varfile")
+    end
+
+
+    # This test finds bugs, but currently breaks when things are working properly.
+    # Disabled until I have more time to fix this issue.
+    xit 'does not install nexpose if it already is installed' do
+      allow(::File).to receive(:exists?).with('/opt/rapid7/nexpose/shared').and_return(true)
+      expect(chef_run).to run_execute('install-nexpose').with(not_if: true)
+    end
   end
 
-  let(:installer) { '/var/chef/cache/NeXposeSetup-Linux64.bin' }
+  context 'only consoles' do
+    let(:chef_run) do 
+      ChefSpec::SoloRunner.new do |node|
+        node.set['nexpose']['component_type'] = 'typical'
+      end.converge(described_recipe)
+    end
 
-  it 'downloads the nexpose linux installer with mode 0700' do
-    expect(chef_run).to create_remote_file(installer).with(mode: 0700)
+    it 'replace the console init script' do
+      expect(chef_run).to create_template('/etc/init.d/nexposeconsole.rc').with(mode: 0755)
+      expect(chef_run).not_to create_template('/etc/init.d/nexposeengine.rc').with(mode: 0755)
+    end
+
+    it 'render content specific values in the init script' do
+      expect(chef_run).to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nsc/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nse/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeconsole.rc').with_content(/^NEX_TYPE=console$/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole.rc').with_content(/^NEX_TYPE=engine$/)
+    end
+
+    it 'enable the nexpose console service' do
+      expect(chef_run).to enable_service('nexposeconsole.rc').with(
+        supports: { :status => true, :restart => true }
+      )
+      expect(chef_run).not_to enable_service('nexposeengine.rc')
+    end
+
+    it 'start the nexpose console service' do
+      expect(chef_run).to start_service('nexposeconsole.rc')
+      expect(chef_run).not_to start_service('nexposeengine.rc')
+    end
   end
 
-  it 'installs nexpose' do
-    expect(chef_run).to run_execute('install-nexpose').with_user('root')
-    expect(chef_run).to run_execute('install-nexpose').with(command: "#{installer} -q -dir /opt/rapid7/nexpose -Dinstall4j.suppressUnattendedReboot=true -varfile /var/chef/cache/response.varfile")
-  end
+  context 'only engines' do
+    let(:chef_run) do 
+      ChefSpec::SoloRunner.new do |node|
+        node.set['nexpose']['component_type'] = 'engine'
+        node.set['nexpose']['service_action'] = [:enable, :start]
+      end.converge(described_recipe)
+    end
 
+    it 'replace the engine init script' do
+      expect(chef_run).to create_template('/etc/init.d/nexposeengine.rc').with(mode: 0755)
+      expect(chef_run).not_to create_template('/etc/init.d/nexposeconsole.rc').with(mode: 0755)
+    end
+
+    it 'render engine specific values in the init script' do
+      expect(chef_run).to render_file('/etc/init.d/nexposeengine.rc').with_content(/nse/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeengine.rc').with_content(/nsc/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeengine.rc').with_content(/^NEX_TYPE=engine$/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeengine.rc').with_content(/^NEX_TYPE=console$/)
+    end
+
+    it 'enable the nexpose engine service' do
+      expect(chef_run).to enable_service('nexposeengine.rc').with(
+        supports: { :status => true, :restart => true }
+      )
+      expect(chef_run).not_to enable_service('nexposeconsole.rc')
+    end
+
+    it 'start the nexpose engine service' do
+      expect(chef_run).to start_service('nexposeengine.rc')
+      expect(chef_run).not_to start_service('nexposeconsole.rc')
+    end
+  end
 end
-
-describe 'broken tests' do
-  before { pending }
-
-  # This test finds bugs, but currently breaks when things are working properly.
-  # Disabled until I have more time to fix this issue.
-  it 'does not install nexpose if it already is installed' do
-    before { pending }
-    allow(::File).to receive(:exists?).with('/opt/rapid7/nexpose/shared').and_return(true)
-    expect(chef_run).to run_execute('install-nexpose').with(not_if: true)
-  end
-end
-
