@@ -5,7 +5,7 @@ driver:
   availability_zone: b
   associate_public_ip: true
   subnet_id: subnet-787e531d
-  instance_type: t2.small
+  instance_type: t2.large
   tags:
     Name: travisci_nexpose-cookbook
 
