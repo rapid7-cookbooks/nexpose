@@ -64,6 +64,7 @@ end
 
 service nexpose_init do
   supports :status => true, :restart => true
+  init_command "/etc/init.d/#{nexpose_init}"
   action node['nexpose']['service_action']
 end
 
