@@ -37,6 +37,8 @@ template ::File.join(Chef::Config['file_cache_path'], 'response.varfile') do
   mode 0644
 end
 
+Chef::Log.info "*******************VARFILE****************\n#{File.read(::File.join(Chef::Config['file_cache_path'], 'response.varfile'))}"
+
 case node['os']
 when 'linux'
   include_recipe 'nexpose::linux'
