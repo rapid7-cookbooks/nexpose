@@ -34,7 +34,7 @@ end
 execute 'install-nexpose' do
   user 'root'
   cwd Chef::Config['file_cache_path']
-  command "#{installer.to_s} #{node['nexpose']['install_args'].join(' ')}"
+  command "#{installer.to_s} #{node['nexpose']['install_args'].join(' ')} >> /home/nexpose/installer-log.txt 2>&1"
   not_if { ::File.exists?(File.join(node['nexpose']['install_path']['linux'], 'shared')) }
 end
 
