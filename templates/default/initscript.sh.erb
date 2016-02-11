@@ -145,7 +145,7 @@ case "$1" in
                 echo -n "Starting Nexpose security $NEX_TYPE: "
                 #remove pid file if process does not exist, or is not nexpose
                 if [ -f $NXP_PID ]; then
-                        ps -p `cat $NXP_PID` | fgrep -q nexserv || rm -f $NXP_PID
+                  ps -p `cat $NXP_PID` | fgrep -q <%= @executable %> || rm -f $NXP_PID
                 fi
 
                 #Test for existance of Xserver and set DISPLAY appropriately

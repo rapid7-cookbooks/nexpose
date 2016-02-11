@@ -65,11 +65,13 @@ describe 'nexpose::linux' do
       expect(chef_run).not_to create_template('/etc/init.d/nexposeengine.rc').with(mode: 0755)
     end
 
-    it 'render content specific values in the init script' do
+    it 'renders console specific values in the init script' do
       expect(chef_run).to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nsc/)
       expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nse/)
       expect(chef_run).to render_file('/etc/init.d/nexposeconsole.rc').with_content(/^NEX_TYPE=console$/)
       expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole.rc').with_content(/^NEX_TYPE=engine$/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nexserv/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nseserv/)
     end
 
     it 'enable the nexpose console service' do
@@ -98,11 +100,13 @@ describe 'nexpose::linux' do
       expect(chef_run).not_to create_template('/etc/init.d/nexposeconsole.rc').with(mode: 0755)
     end
 
-    it 'render engine specific values in the init script' do
+    it 'renders engine specific values in the init script' do
       expect(chef_run).to render_file('/etc/init.d/nexposeengine.rc').with_content(/nse/)
       expect(chef_run).not_to render_file('/etc/init.d/nexposeengine.rc').with_content(/nsc/)
       expect(chef_run).to render_file('/etc/init.d/nexposeengine.rc').with_content(/^NEX_TYPE=engine$/)
       expect(chef_run).not_to render_file('/etc/init.d/nexposeengine.rc').with_content(/^NEX_TYPE=console$/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeengine.rc').with_content(/nseserv/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeengine.rc').with_content(/nexserv/)
     end
 
     it 'enable the nexpose engine service' do

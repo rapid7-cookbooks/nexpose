@@ -58,7 +58,8 @@ template ::File.join('/etc/init.d', nexpose_init) do
   source 'initscript.sh.erb'
   variables ({
     :type => node['nexpose']['component_type'] =~ /engine/ ? 'engine' : 'console',
-    :type_path => node['nexpose']['component_type'] =~ /engine/ ? 'nse' : 'nsc'
+    :type_path => node['nexpose']['component_type'] =~ /engine/ ? 'nse' : 'nsc',
+    :executable => node['nexpose']['component_type'] =~ /engine/ ? 'nseserv' : 'nexserv'
   })
 end
 
