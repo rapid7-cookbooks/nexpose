@@ -63,3 +63,4 @@ default['nexpose']['install_args'] = ['-q',
                                       '-dir', node['nexpose']['install_path'][node['os']].to_s,
                                       '-Dinstall4j.suppressUnattendedReboot=' + node['nexpose']['suppress_reboot'].to_s,
                                       '-varfile', ::File.join(Chef::Config['file_cache_path'], 'response.varfile')]
+default['nexpose']['custom_properties'] = {}

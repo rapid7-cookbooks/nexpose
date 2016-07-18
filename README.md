@@ -104,6 +104,12 @@ Attributes
     <td>Array of arguments passed to the installer.<tt>
     <td><tt>['-q', '-dir', node['nexpose']['install_path'][node[os]], '-Dinstall4j.suppressUnattendedReboot=' + node['nexpose']['suppress_reboot'].to_s, '-varfile', File.join(Chef::Config['file_cache_path'], 'response.varfile')]</td></tt>
   </tr>
+  <tr>
+    <td><tt>['nexpose']['custom_properties']</tt></td>
+    <td>Hash</td>
+    <td>Hash of key value pairs to be written to <install_path>/{nsc,nse}/CustomEnvironment.properties<tt>
+    <td><tt>{}</tt></td>
+  </tr>
 </table>
 
 Usage
