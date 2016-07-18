@@ -63,6 +63,20 @@ template ::File.join('/etc/init.d', nexpose_init) do
   })
 end
 
+# Path to environment file is different for engines and consoles.
+case node['nexpose']['component_type']
+when 'typical', 'console'
+  environment_file = ::File.join(node['nexpose']['install_path'][node['os']], 'nsc', 'CustomEnvironment.properties')
+when 'engine'
+  environment_file = ::File.join(node['nexpose']['install_path'][node['os']], 'nse', 'CustomEnvironment.properties')
+else
+  log "Invalid nexpose compontent_type specified: #{node['nexpose']['component_type']}. Valid component_types are typical and engine"
+end
+
+template environment_file do
+  not_if { node['nexpose']['custom_properties'].empty? }
+end
+
 service nexpose_init do
   supports :status => true, :restart => true
   init_command "/etc/init.d/#{nexpose_init}"
