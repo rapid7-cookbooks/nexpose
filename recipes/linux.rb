@@ -51,18 +51,6 @@ else
   log "Invalid nexpose compontent_type specified: #{node['nexpose']['component_type']}. Valid component_types are typical and engine"
 end
 
-# Hack in the init script patch which supports status until the patch is
-# released in Nexpose.
-template ::File.join('/etc/init.d', nexpose_init) do
-  mode 0755
-  source 'initscript.sh.erb'
-  variables ({
-    :type => node['nexpose']['component_type'] =~ /engine/ ? 'engine' : 'console',
-    :type_path => node['nexpose']['component_type'] =~ /engine/ ? 'nse' : 'nsc',
-    :executable => node['nexpose']['component_type'] =~ /engine/ ? 'nseserv' : 'nexserv'
-  })
-end
-
 # Path to environment file is different for engines and consoles.
 case node['nexpose']['component_type']
 when 'typical', 'console'
@@ -79,7 +67,6 @@ end
 
 service nexpose_init do
   supports :status => true, :restart => true
-  init_command "/etc/init.d/#{nexpose_init}"
   action node['nexpose']['service_action']
 end
 
