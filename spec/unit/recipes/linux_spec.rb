@@ -66,24 +66,24 @@ describe 'nexpose::linux' do
     end
 
     it 'renders console specific values in the init script' do
-      expect(chef_run).to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nsc/)
-      expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nse/)
-      expect(chef_run).to render_file('/etc/init.d/nexposeconsole.rc').with_content(/^NEX_TYPE=console$/)
-      expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole.rc').with_content(/^NEX_TYPE=engine$/)
-      expect(chef_run).to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nexserv/)
-      expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole.rc').with_content(/nseserv/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeconsole').with_content(/nsc/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole').with_content(/nse/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeconsole').with_content(/^NEX_TYPE=console$/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole').with_content(/^NEX_TYPE=engine$/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeconsole').with_content(/nexserv/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeconsole').with_content(/nseserv/)
     end
 
     it 'enable the nexpose console service' do
-      expect(chef_run).to enable_service('nexposeconsole.rc').with(
+      expect(chef_run).to enable_service('nexposeconsole').with(
         supports: { :status => true, :restart => true }
       )
-      expect(chef_run).not_to enable_service('nexposeengine.rc')
+      expect(chef_run).not_to enable_service('nexposeengine')
     end
 
     it 'start the nexpose console service' do
-      expect(chef_run).to start_service('nexposeconsole.rc')
-      expect(chef_run).not_to start_service('nexposeengine.rc')
+      expect(chef_run).to start_service('nexposeconsole')
+      expect(chef_run).not_to start_service('nexposeengine')
     end
   end
 
@@ -101,24 +101,24 @@ describe 'nexpose::linux' do
     end
 
     it 'renders engine specific values in the init script' do
-      expect(chef_run).to render_file('/etc/init.d/nexposeengine.rc').with_content(/nse/)
-      expect(chef_run).not_to render_file('/etc/init.d/nexposeengine.rc').with_content(/nsc/)
-      expect(chef_run).to render_file('/etc/init.d/nexposeengine.rc').with_content(/^NEX_TYPE=engine$/)
-      expect(chef_run).not_to render_file('/etc/init.d/nexposeengine.rc').with_content(/^NEX_TYPE=console$/)
-      expect(chef_run).to render_file('/etc/init.d/nexposeengine.rc').with_content(/nseserv/)
-      expect(chef_run).not_to render_file('/etc/init.d/nexposeengine.rc').with_content(/nexserv/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeengine').with_content(/nse/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeengine').with_content(/nsc/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeengine').with_content(/^NEX_TYPE=engine$/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeengine').with_content(/^NEX_TYPE=console$/)
+      expect(chef_run).to render_file('/etc/init.d/nexposeengine').with_content(/nseserv/)
+      expect(chef_run).not_to render_file('/etc/init.d/nexposeengine').with_content(/nexserv/)
     end
 
     it 'enable the nexpose engine service' do
-      expect(chef_run).to enable_service('nexposeengine.rc').with(
+      expect(chef_run).to enable_service('nexposeengine').with(
         supports: { :status => true, :restart => true }
       )
-      expect(chef_run).not_to enable_service('nexposeconsole.rc')
+      expect(chef_run).not_to enable_service('nexposeconsole')
     end
 
     it 'start the nexpose engine service' do
-      expect(chef_run).to start_service('nexposeengine.rc')
-      expect(chef_run).not_to start_service('nexposeconsole.rc')
+      expect(chef_run).to start_service('nexposeengine')
+      expect(chef_run).not_to start_service('nexposeconsole')
     end
   end
 end
