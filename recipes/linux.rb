@@ -44,9 +44,9 @@ end
 # name.
 case node['nexpose']['component_type']
 when 'typical', 'console'
-  nexpose_init = 'nexposeconsole.rc'
+  nexpose_init = 'nexposeconsole'
 when 'engine'
-  nexpose_init = 'nexposeengine.rc'
+  nexpose_init = 'nexposeengine'
 else
   log "Invalid nexpose compontent_type specified: #{node['nexpose']['component_type']}. Valid component_types are typical and engine"
 end
