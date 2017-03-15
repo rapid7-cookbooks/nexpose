@@ -55,6 +55,7 @@ communicationDirectionChoice$Integer=1
 #username=jsmith
 #password1=example
 #password2=example
+#requirePasswordChange$Boolean=false
 #
 #NOTE: A response file created by running the installer will contain the
 # options "password1.encoded" and "password2.encoded" and a encoded
@@ -67,6 +68,7 @@ communicationDirectionChoice$Integer=1
 username=<%= node['nexpose']['username'] %>
 password1=<%= node['nexpose']['password'] %>
 password2=<%= node['nexpose']['password'] %>
+requirePasswordChange$Boolean=<%= !!node['nexpose']['require_password_change'] %>
  
 #INSTALL PATH SEPERATOR MUST BE ESCAPED
 #sys.installationDir=C:\\Program Files\\Rapid7\\custom
