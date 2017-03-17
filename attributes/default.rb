@@ -47,6 +47,8 @@ default['nexpose']['last_name'] = 'User'
 default['nexpose']['company_name'] = 'Rapid7'
 # Install type (typical || engine)
 default['nexpose']['component_type'] = 'typical'
+# Communication direction (1 => Engine->Console || 2=> Console->Engine)
+default['nexpose']['communication_direction'] = 1
 # Credentials
 default['nexpose']['username'] = 'nxadmin'
 default['nexpose']['password'] = 'nxadmin'
