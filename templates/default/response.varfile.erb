@@ -42,7 +42,7 @@ company=<%= node['nexpose']['company_name'] %>
 ## Installation component type.
 sys.component.engine$Boolean=<%= @engine_bool %>
 sys.component.typical$Boolean=<%= @console_bool %>
-communicationDirectionChoice$Integer=1
+communicationDirectionChoice$Integer= <%= node['nexpose']['communication_direction'] %>
 
 ###############################################################
 #IT IS STRONGLY RECOMMENDED NOT TO USE PLAIN TEXT PASSWORDS
