@@ -19,7 +19,9 @@
 #
 
 # Install Nexpose Pre-Reqs
-package 'screen' unless node['platform_family'] == 'rhel' # rhel requires CD/ISO to be mounted to install screen
+package 'screen' do
+  ignore_failure true
+end
 
 installer = ::File.join(Chef::Config['file_cache_path'], node['nexpose']['installer']['bin'])
 
