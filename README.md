@@ -99,6 +99,12 @@ Attributes
     <td><tt>nxadmin</tt></td>
   </tr>
   <tr>
+    <td><tt>['nexpose']['require_password_change']</tt></td>
+    <td>Boolean</td>
+    <td>If true, requires user to change their password from nxadmin upon first login</td>
+    <td><tt>false</tt></td>
+  </tr>
+  <tr>
     <td><tt>['nexpose']['install_args']</tt></td>
     <td>Array</td>
     <td>Array of arguments passed to the installer.<tt>
