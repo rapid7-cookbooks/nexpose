@@ -5,17 +5,17 @@
 # RESPONSE FILE FOR UNATTENDED/QUIET INSTALL OF THE PRODUCT.
 # BY USING THIS FILE YOU AGREE TO BE BOUND BY THE TERMS
 # AND CONDITIONS SPECIFIED IN THE PRODUCT EULA
- 
+
 # NOTE:
 # THIS FILE ASSUMES YOU ALREADY HAVE A KEY TO ACTIVATE
 # THE PRODUCT. THE COMPUTER IS REBOOTED BY DEFAULT AFTER THE
 # INSTALL, YOU CAN OVERRIDE THIS BEHAVIOR BY PASSING A
 # COMMAND LINE PARAMETER
 # -Dinstall4j.suppressUnattendedReboot=true
- 
+
 #ONLY ENGLISH LANGUAGE IS SUPPORTED
 sys.languageId=en
- 
+
 #OPTIONALLY SPECIFY AN IPV4 SERVER ADDRESS OR DOMAIN NAME
 #proxyHost=10.2.45.143
 #proxyHost=<proxy host address>
@@ -63,15 +63,15 @@ communicationDirectionChoice$Integer=1
 # installation to be completed in order to determine the encoded password
 # value. Response files should be treated as sensitive data even if they
 # contain only encrypted password values.
- 
+
 username=<%= node['nexpose']['username'] %>
 password1=<%= node['nexpose']['password'] %>
 password2=<%= node['nexpose']['password'] %>
- 
+
 #INSTALL PATH SEPERATOR MUST BE ESCAPED
 #sys.installationDir=C:\\Program Files\\Rapid7\\custom
 #sys.installationDir=<install path>
- 
+
 #SET THIS TO TRUE IF A DESKTOP ICON TO START NEXPOSE IS REQUIRED
 #createDesktopLinkAction$Boolean=true or false
 <% if node['os'] == 'windows' and node['nexpose']['compontent_type'] =~ /^(typical|console)$/ -%>
@@ -82,13 +82,16 @@ createDesktopLinkAction$Boolean=<%= node['nexpose']['create_desktop_icon'].to_s 
 #SHOULD BE AVAILABLE TO ALL USERS
 #sys.programGroupAllUsers$Boolean=true or false
 sys.programGroupAllUsers$Boolean=<%= node['nexpose']['shortcuts_for_all_users'].to_s %>
- 
+
 #SET THE NAME OF THE START MENU ITEM
 #sys.programGroupName=Nexpose
 sys.programGroupName=<%= node['nexpose']['startmenu_item_name'] %>
 
 #Prevent the installer from starting Nexpose and delegate control to Chef.
 initService$Boolean=false
+
+# Prompt to reset password at first login
+requirePasswordChange$Boolean=<%= node['nexpose']['require_password_change'].to_s %>
 
 #DO NOT MODIFY THE FIELDS BELOW
 registrationRequired$Integer=1
