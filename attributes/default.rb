@@ -50,6 +50,7 @@ default['nexpose']['component_type'] = 'typical'
 # Credentials
 default['nexpose']['username'] = 'nxadmin'
 default['nexpose']['password'] = 'nxadmin'
+default['nexpose']['require_password_change'] = false
 # Shortcuts and Start Menu configs
 default['nexpose']['create_desktop_icon'] = true
 default['nexpose']['shortcuts_for_all_users'] = true
