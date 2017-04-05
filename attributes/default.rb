@@ -27,9 +27,9 @@
 # of the Nexpose installer.
 default['rapid7']['product'] = 'Nexpose '
 # Nexpose Installer
-default['nexpose']['installer']['linux']['bin'] = 'NeXposeSetup-Linux64.bin'
+default['nexpose']['installer']['linux']['bin'] = 'Rapid7Setup-Linux64.bin'
 default['nexpose']['installer']['linux']['checksum'] = nil
-default['nexpose']['installer']['windows']['bin'] = 'NeXposeSetup-Windows64.exe'
+default['nexpose']['installer']['windows']['bin'] = 'Rapid7Setup-Windows64.exe'
 default['nexpose']['installer']['windows']['checksum'] = nil
 # Set the bin URL based on the detected OS value. Supported values are Linux and Windows.
 default['nexpose']['installer']['bin'] = node['nexpose']['installer'][node['os']]['bin']
