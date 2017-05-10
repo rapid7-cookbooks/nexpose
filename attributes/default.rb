@@ -33,7 +33,7 @@ default['nexpose']['installer']['windows']['bin'] = 'Rapid7Setup-Windows64.exe'
 default['nexpose']['installer']['windows']['checksum'] = nil
 # Set the bin URL based on the detected OS value. Supported values are Linux and Windows.
 default['nexpose']['installer']['bin'] = node['nexpose']['installer'][node['os']]['bin']
-default['nexpose']['installer']['uri'] = "http://download2.rapid7.com/download/NeXpose-v4/#{node['nexpose']['installer']['bin']}"
+default['nexpose']['installer']['uri'] = "http://download2.rapid7.com/download/InsightVM/#{node['nexpose']['installer']['bin']}"
 
 
 default['nexpose']['install_path']['linux'] = ::File.join('/', 'opt', 'rapid7', node['rapid7']['product'].downcase.rstrip)
