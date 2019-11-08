@@ -7,7 +7,6 @@ gem 'ridley', '~> 4.4.2'
 # TODO: berkshelf 4.x is broken with hashie 3.5.x
 gem 'hashie', '~> 3.4.3'
 gem 'chefspec'
-gem 'knife-spec'
 gem 'test-kitchen', '~> 1.4.2'
 gem 'kitchen-vagrant'
 gem 'kitchen-docker'
