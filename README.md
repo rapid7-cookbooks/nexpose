@@ -1,3 +1,4 @@
+DEPRECATED - No longer developed.
 Nexpose Cookbook
 ==========
 [![Build Status](https://travis-ci.org/rapid7-cookbooks/nexpose.svg)](https://travis-ci.org/rapid7-cookbooks/nexpose)
